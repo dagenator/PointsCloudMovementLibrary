@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "rWqw++Nmr/FPaayUtEcT78/+AWeTYL7GBbuRn8W7dFoA5tkkQniCVEEGo4ZnsvxmAgTvMShUoEBdeHdrTfMmyw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\gabid\\source\\repos\\PointsCloudMovementLibrary\\PointsCloudMovementLibrary\\PointsCloudMovementLibrary.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gabid\\.nuget\\packages\\mathnet.numerics\\4.15.0\\mathnet.numerics.4.15.0.nupkg.sha512"
+  ],
+  "logs": []
+}
