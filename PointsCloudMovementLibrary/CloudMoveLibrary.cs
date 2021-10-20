@@ -13,6 +13,11 @@ namespace PointsCloudMovementLibrary
         {
             private Vector<double> V;
 
+            public Point3D(Vector<double> v)
+            {
+                V = v;
+            }
+
             public Point3D(double x, double y, double z)
             {
                 V[0] = x;
@@ -41,10 +46,12 @@ namespace PointsCloudMovementLibrary
             }
 
 
-
         }
 
-        public Matrix<double> MovementMatrixCalcutation(Point3D startPoint, Point3D xEnd, Point3D yEnd, Point3D zEnd)
+
+
+
+        private Matrix<double> CalculateMovementMatrix(Point3D startPoint, Point3D xEnd, Point3D yEnd, Point3D zEnd)
         {
             Func<Point3D, Point3D, Point3D> substract = (x, y) => new Point3D(x.getX() - y.getX(), x.getY() - y.getY(), x.getZ() - y.getZ());
 
@@ -56,7 +63,31 @@ namespace PointsCloudMovementLibrary
             return m;
         }
 
+        private Point3D CalculateNewLocationOfOldBase(Point3D locationOfNewBasis, Matrix<double> reverseMatrix)
+        {
+            return new Point3D(reverseMatrix.Multiply(locationOfNewBasis.getVector()));
+        }
 
+        public Point3D[] CloudRecalculation(Point3D[] oldCloud, Point3D startPoint, Point3D xEnd, Point3D yEnd, Point3D zEnd)
+        {
+            List<Point3D> newCloud = new List<Point3D>();
+            Matrix<double> M = CalculateMovementMatrix(startPoint, xEnd, yEnd, zEnd);
+            Matrix<double> revM = M.Inverse();
+            Point3D oldBaseInNewLoc = CalculateNewLocationOfOldBase(startPoint, revM);
+            
+
+            foreach (Point3D oldPoint in oldCloud)
+            {
+                var v1 =revM.Multiply(oldPoint.getVector());
+                var res = v1 + oldBaseInNewLoc.getVector();
+
+                newCloud.Add(new Point3D(res));
+            }
+
+            return newCloud.ToArray();
+        }
+
+        
 
 
     }
