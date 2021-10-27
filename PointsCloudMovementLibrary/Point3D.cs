@@ -1,3 +1,4 @@
+using System;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace PointsCloudMovementLibrary
@@ -31,7 +32,7 @@ namespace PointsCloudMovementLibrary
 
         public Point3D(double x, double y, double z)
         {
-            Vector = Vector<double>.Build.DenseOfArray(new double[] { x, y, z });
+            Vector = Vector<double>.Build.DenseOfArray(new [] { x, y, z });
         }
 
         public static Point3D operator +(Point3D p1, Point3D p2)
@@ -46,7 +47,17 @@ namespace PointsCloudMovementLibrary
 
         public override string ToString()
         {
-            return $"({X:#.###}, {Y:#.###}, {Z:#.###})";
+            return $"({X}, {Y}, {Z})";
+        }
+
+        public override bool Equals(object other)
+        {
+            return other is Point3D point3D && Vector.Equals(point3D.Vector);
+        }
+
+        public override int GetHashCode()
+        {
+            return Vector.GetHashCode();
         }
     }
 }
