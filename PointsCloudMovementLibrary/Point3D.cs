@@ -1,4 +1,5 @@
 using System;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace PointsCloudMovementLibrary
@@ -52,7 +53,7 @@ namespace PointsCloudMovementLibrary
 
         public override bool Equals(object other)
         {
-            return other is Point3D point3D && Vector.Equals(point3D.Vector);
+            return other is Point3D point3D && Vector.AlmostEqual(point3D.Vector,0.000000001);
         }
 
         public override int GetHashCode()

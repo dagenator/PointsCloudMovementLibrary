@@ -12,7 +12,7 @@ namespace PointsCloudMovementLibrary.Tests
             {
                 yield return new TestCaseData(new Point3D(1, 1, 1), new Point3D(1, 1, 1), new Point3D(2, 2, 2));
                 yield return new TestCaseData(new Point3D(-1, -1, -1), new Point3D(1, 1, 1), new Point3D(0, 0, 0));
-                // yield return new TestCaseData(new Point3D(0.1, 1, 1), new Point3D(0.2, 1, 1), new Point3D(0.3, 2, 2));
+                yield return new TestCaseData(new Point3D(0.1, 1, 1), new Point3D(0.2, 1, 1), new Point3D(0.3, 2, 2));
             }
         }
         

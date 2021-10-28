@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace PointsCloudMovementLibrary
@@ -10,9 +11,7 @@ namespace PointsCloudMovementLibrary
             Point3D newX = xEnd - startPoint;
             Point3D newY = yEnd - startPoint;
             Point3D newZ = zEnd - startPoint;
-            Matrix<double> m =
-                Matrix<double>.Build.DenseOfColumnVectors(newX.Vector, newY.Vector, newZ.Vector);
-            return m;
+            return Matrix<double>.Build.DenseOfColumnVectors(newX.Vector, newY.Vector, newZ.Vector);
         }
 
         private Point3D CalculateNewLocationOfOldBase(Point3D locationOfNewBasis, Matrix<double> reverseMatrix)
@@ -20,24 +19,19 @@ namespace PointsCloudMovementLibrary
             return new Point3D(reverseMatrix.Multiply(locationOfNewBasis.Vector));
         }
 
-        public Point3D[] CloudRecalculation(Point3D[] oldCloud, Point3D startPoint, Point3D xEnd, Point3D yEnd,
-            Point3D zEnd)
+        public IEnumerable<Point3D> CloudRecalculation(Point3D[] oldCloud, Point3D startPoint,
+                                                            Point3D xEnd, Point3D yEnd, Point3D zEnd)
         {
-            List<Point3D> newCloud = new List<Point3D>();
-            Matrix<double> M = CalculateMovementMatrix(startPoint, xEnd, yEnd, zEnd);
-            Matrix<double> revM = M.Inverse();
-            Point3D oldBaseInNewLoc = CalculateNewLocationOfOldBase(startPoint, revM);
-
+            Matrix<double> movementMatrix = CalculateMovementMatrix(startPoint, xEnd, yEnd, zEnd);
+            Matrix<double> reverseMatrix = movementMatrix.Inverse();
+            Point3D oldBaseInNewLocation = CalculateNewLocationOfOldBase(startPoint, reverseMatrix);
 
             foreach (Point3D oldPoint in oldCloud)
             {
-                var v1 = revM.Multiply(oldPoint.Vector);
-                var res = v1 + oldBaseInNewLoc.Vector;
-
-                newCloud.Add(new Point3D(res));
+                var vector = reverseMatrix.Multiply(oldPoint.Vector);
+                var oldPointInNewBase = vector + oldBaseInNewLocation.Vector;
+                yield return new Point3D(oldPointInNewBase);
             }
-
-            return newCloud.ToArray();
         }
     }
 }
