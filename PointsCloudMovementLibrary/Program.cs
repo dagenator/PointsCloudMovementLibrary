@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -28,19 +29,24 @@ namespace PointsCloudMovementLibrary
             tempArr = Console.ReadLine().Split();
             var zEnd =  new Point3D(Double.Parse(tempArr[0]), Double.Parse( tempArr[1]), Double.Parse( tempArr[2]));
 
-            StreamReader reader = new  StreamReader(path);
-            List<Point3D> OldCloud = new List<Point3D>();
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                tempArr = line.Split();
-                var point =  new Point3D(Double.Parse(tempArr[0]), Double.Parse( tempArr[1]), Double.Parse( tempArr[2]));
-                OldCloud.Add(point);
-            }
+            var OldCloud = ReadFile(path);
 
             var cloudCalculator = new CloudMoveLibrary();
             var newCloud = cloudCalculator.CloudRecalculationByPointToPoint(OldCloud.ToArray(), newBase, xEnd, yEnd, zEnd).ToArray();
             
+        }
+        private static IEnumerable<Point3D> ReadFile(string path)
+        {
+            return File.ReadAllLines(path)
+                .SkipWhile(x => !x.Contains("end_header"))
+                .Skip(1)
+                .Select(line =>
+                {
+                    var xyz = line
+                        .Split(' ')
+                        .Select(l => double.Parse(l, CultureInfo.InvariantCulture)).ToList();
+                    return new Point3D(xyz[0], xyz[1], xyz[2]);
+                });
         }
     }
 }
